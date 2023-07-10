@@ -6,7 +6,8 @@ import qrcode
 import re
 import requests
 import abc
-
+import imghdr
+import mimetypes
 from .exceptions import LineServiceException
 
 
@@ -214,14 +215,12 @@ class Helpers(object, metaclass=abc.ABCMeta):
             if resp.status_code != status_code:
                 return False
         return True
-
-    def checkIsVideo(self, filename: str):
-        video_suffix = [".mp4", ".mkv", ".webm"]
-        for _vs in video_suffix:
-            if filename.endswith(_vs):
-                return True
-        return False
-
+    def checkIsVideo(self,path):
+        mime_type = imghdr.what(None, h=path)
+        if mime_type is not None and 'video' in mime_type:
+            return True
+        else:
+            return False
     def getProfileCoverObjIdAndUrl(self, mid: str):
         video_obj = None
         video_url = None
